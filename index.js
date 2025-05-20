@@ -19,7 +19,15 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    const createTaskCollection = client.db("taskdb").collection("createTask");
     await client.connect();
+
+    app.post("/createTask", async (req, res) => {
+      const newTask = req.body;
+    //   console.log(newTask);
+      const result = await createTaskCollection.insertOne(newTask);
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
