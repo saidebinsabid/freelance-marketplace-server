@@ -27,6 +27,13 @@ async function run() {
       res.send(tasks);
     });
 
+    app.get("/tasks/:id", async (req, res)=>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const result = await createTaskCollection.findOne(query);
+        res.send(result);
+    })
+
     app.post("/createTask", async (req, res) => {
       const newTask = req.body;
       //   console.log(newTask);
