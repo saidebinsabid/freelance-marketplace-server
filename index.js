@@ -50,6 +50,23 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/tasks/:id", async (req, res) => {
+      const taskId = req.params.id;
+      const updatedData = req.body;
+
+      try {
+        const result = await createTaskCollection.updateOne(
+          { _id: new ObjectId(taskId) },
+          { $set: updatedData }
+        );
+
+        res.json({ modifiedCount: result.modifiedCount });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to update task" });
+      }
+    });
+
     app.patch("/update-bid-count/:id", async (req, res) => {
       const id = req.params.id;
       const { bidsCount } = req.body;
