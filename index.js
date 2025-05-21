@@ -44,6 +44,19 @@ async function run() {
       res.send(tasks);
     });
 
+    app.get("/tasks", async (req, res) => {
+      try {
+        const tasks = await createTaskCollection
+          .find()
+          .sort({ deadline: -1 })
+          .limit(6)
+          .toArray();
+        res.send(tasks);
+      } catch (error) {
+        res.status(500).send({ message: "Failed to fetch tasks", error });
+      }
+    });
+
     app.post("/createTask", async (req, res) => {
       const newTask = req.body;
       const result = await createTaskCollection.insertOne(newTask);
