@@ -27,24 +27,34 @@ async function run() {
       res.send(tasks);
     });
 
-    app.get("/tasks/:id", async (req, res)=>{
-        const id = req.params.id;
-        const query = {_id: new ObjectId(id)}
-        const result = await createTaskCollection.findOne(query);
-        res.send(result);
+    app.get("/tasks/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await createTaskCollection.findOne(query);
+      res.send(result);
     });
 
-    app.get("/myTasks", async(req, res)=>{
-        const userEmail = req.query.email;
-        if(!userEmail) return res.status(400).send({message: "Email Required"});
-        const tasks = await createTaskCollection.find({email: userEmail}).toArray();
-        res.send(tasks);
-    })
+    app.get("/myTasks", async (req, res) => {
+      const userEmail = req.query.email;
+      if (!userEmail)
+        return res.status(400).send({ message: "Email Required" });
+      const tasks = await createTaskCollection
+        .find({ email: userEmail })
+        .toArray();
+      res.send(tasks);
+    });
 
     app.post("/createTask", async (req, res) => {
       const newTask = req.body;
-      //   console.log(newTask);
       const result = await createTaskCollection.insertOne(newTask);
+      res.send(result);
+    });
+
+    app.delete("/tasks/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await createTaskCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
       res.send(result);
     });
 
