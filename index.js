@@ -50,6 +50,32 @@ async function run() {
       res.send(result);
     });
 
+    app.patch("/update-bid-count/:id", async (req, res) => {
+      const id = req.params.id;
+      const { bidsCount } = req.body;
+
+      if (typeof bidsCount !== "number") {
+        return res.status(400).send({ message: "Invalid bid count value" });
+      }
+
+      try {
+        const result = await createTaskCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: { bidsCount: bidsCount } }
+        );
+
+        if (result.modifiedCount > 0) {
+          res.send({ success: true, message: "Bid count updated" });
+        } else {
+          res
+            .status(404)
+            .send({ success: false, message: "Task not found or not updated" });
+        }
+      } catch (error) {
+        res.status(500).send({ success: false, error: error.message });
+      }
+    });
+
     app.delete("/tasks/:id", async (req, res) => {
       const id = req.params.id;
       const result = await createTaskCollection.deleteOne({
