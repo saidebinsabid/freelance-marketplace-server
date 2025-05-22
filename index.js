@@ -19,9 +19,9 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    const createTaskCollection = client.db("taskdb").collection("createTask");
     await client.connect();
-
+    const createTaskCollection = client.db("taskdb").collection("createTask");
+    
     app.get("/tasks", async (req, res) => {
       const tasks = await createTaskCollection.find().toArray();
       res.send(tasks);
@@ -44,18 +44,19 @@ async function run() {
       res.send(tasks);
     });
 
-    app.get("/tasks", async (req, res) => {
-      try {
-        const tasks = await createTaskCollection
-          .find()
-          .sort({ deadline: -1 })
-          .limit(6)
-          .toArray();
-        res.send(tasks);
-      } catch (error) {
-        res.status(500).send({ message: "Failed to fetch tasks", error });
-      }
-    });
+    app.get("/latestTasks", async (req, res) => {
+  try {
+    const tasks = await createTaskCollection
+      .find()
+      .sort({ deadline: -1 })
+      .limit(6)
+      .toArray();
+    res.send(tasks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Failed to fetch tasks", error });
+  }
+});
 
     app.post("/createTask", async (req, res) => {
       const newTask = req.body;
