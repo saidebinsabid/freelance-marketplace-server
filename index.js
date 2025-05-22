@@ -19,7 +19,6 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
     const createTaskCollection = client.db("taskdb").collection("createTask");
     
     app.get("/tasks", async (req, res) => {
@@ -34,7 +33,7 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/myTasks", async (req, res) => {
+    app.get("/my-tasks", async (req, res) => {
       const userEmail = req.query.email;
       if (!userEmail)
         return res.status(400).send({ message: "Email Required" });
@@ -44,7 +43,7 @@ async function run() {
       res.send(tasks);
     });
 
-    app.get("/latestTasks", async (req, res) => {
+    app.get("/latest-tasks", async (req, res) => {
   try {
     const tasks = await createTaskCollection
       .find()
@@ -58,7 +57,7 @@ async function run() {
   }
 });
 
-    app.post("/createTask", async (req, res) => {
+    app.post("/create-task", async (req, res) => {
       const newTask = req.body;
       const result = await createTaskCollection.insertOne(newTask);
       res.send(result);
@@ -115,10 +114,6 @@ async function run() {
       res.send(result);
     });
 
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
   } finally {
   }
 }
