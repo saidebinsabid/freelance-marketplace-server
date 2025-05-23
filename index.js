@@ -47,7 +47,7 @@ async function run() {
   try {
     const tasks = await createTaskCollection
       .find()
-      .sort({ deadline: -1 })
+      .sort({ deadline: 1 })
       .limit(6)
       .toArray();
     res.send(tasks);
